@@ -1,0 +1,54 @@
+{% extends 'admin_templates/base.html' %}
+{% block body %}
+    <!-- Main content -->
+          <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Edit Route</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" action="{% url "edit_bus_route_save" %}" method="post">
+                  {% csrf_token %}
+                <div class="card-body">
+                  <div class="form-group">
+                    <label>Origin</label>
+                    <input type="text" class="form-control" name="origin" placeholder="Origin" id="id_origin" value="{{ bus_route.origin }}" autocomplete="off">
+                  </div>
+                  <div class="form-group">
+                    <label>Destination</label>
+                    <input type="text" class="form-control" name="destination" placeholder="Destination" id="id_destination" value="{{ bus_route.destination }}" autocomplete="off">
+                  </div>
+                  <div class="form-group">
+                    <label>Distance</label>
+                    <input type="number" class="form-control" name="distance" placeholder="Distance" id="id_distance" value="{{ bus_route.distance }}" autocomplete="off">
+                    <input type="hidden" class="form-control" name="bus_route_id" value="{{ bus_route.id }}">
+                  </div>
+                  <div class="form-group">
+                      {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                  </div>
+
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary btn-block">Save Route</button>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
+          </div>
+          </div>
+    <!-- /.content -->
+{% endblock body %}

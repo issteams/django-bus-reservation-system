@@ -1,0 +1,25 @@
+/* Custom styles */
+.hero {
+    background-color: #fff;
+    color: #0047ab; /* Blue */
+}
+
+.hero .btn-warning {
+    background-color: #ff8c00; /* Orange */
+    border-color: #ff8c00;
+}
+
+.hero .btn-warning:hover {
+    background-color: #e07b00;
+    border-color: #e07b00;
+}
+
+.testimonials {
+    background-color: #e6f2ff; /* Light Blue */
+}
+
+footer .social a {
+    color: #ff8c00; /* Orange */
+    margin: 0 10px;
+    text-decoration: none;
+}

@@ -1,0 +1,62 @@
+{% load static %}
+  
+<!-- Navbar -->
+<nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
+  <div class="container">
+    <a href="#" class="navbar-brand">
+      <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">KAD RIDE</span>
+    </a>
+
+    <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+      <!-- Left navbar links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          {% url "admin_home" as admin_home %}
+          <a href="{{ admin_home }}" class="nav-link {% if request.path == admin_home %} active {% endif %}">Home</a>
+        </li>
+        <li class="nav-item">
+          {% url "passengers" as passengers %}
+          {% url "add_passenger" as add_passenger %}
+          <a href="{{ passengers }}" class="nav-link {% if request.path == passengers %} active {% endif %} {% if request.path == add_passenger %} active {% endif %}">Passangers</a>
+        </li>
+        <li class="nav-item">
+          {% url 'bus_route' as bus_route %}
+          {% url 'add_bus_route' as add_bus_route %}
+          <a href="{{ bus_route }}" class="nav-link {% if request.path == bus_route %} active {% endif %} {% if request.path == add_bus_route %} active {% endif %}">Routes</a>
+        </li>
+        <li class="nav-item">
+          {% url 'bus' as bus %}
+          {% url 'add_bus' as add_bus %}
+          <a href="{{ bus }}" class="nav-link {% if request.path == bus %} active {% endif %} {% if request.path == add_bus %} active {% endif %}">Bus</a>
+        </li>
+        <li class="nav-item">
+          {% url 'schedule' as schedule %}
+          {% url 'add_schedule' as add_schedule %}
+          <a href="{{ schedule }}" class="nav-link {% if request.path == schedule %} active {% endif %} {% if request.path == add_schedule %} active {% endif %}">Schedules</a>
+        </li>
+        <li class="nav-item">
+          {% url 'payment' as payment %}
+          {% url 'add_payment' as add_payment %}
+          <a href="{{ payment }}" class="nav-link {% if request.path == payment %} active {% endif %} {% if request.path == add_payment %} active {% endif %}">Payments</a>
+        </li>
+        <li class="nav-item">
+          {% url 'ticket' as ticket %}
+          {% url 'add_ticket' as add_ticket %}
+          <a href="{{ ticket }}" class="nav-link {% if request.path == ticket %} active {% endif %} {% if request.path == add_ticket %} active {% endif %}">Tickets</a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url "logout" %}" class="nav-link">LogOut</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- /.navbar -->

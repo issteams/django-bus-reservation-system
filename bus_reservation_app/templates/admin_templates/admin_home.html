@@ -1,0 +1,30 @@
+{% extends 'admin_templates/base.html' %}
+{% load static %}
+
+{% block title %} Home {% endblock title%}
+
+{% block custom_css %}
+<style>
+  .content {
+    background-image: url("{% static 'dist/img/bus.jpeg' %}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 565px;
+  }
+  .text-center {
+    padding-top: 100px;
+  }
+</style>
+{% endblock custom_css %}
+
+{% block body %}
+    <!-- Main content -->
+    <div class="content">
+      <div class="container text-center">
+        <p class="text-center">With supporting text below as a natural lead-in to additional content.</p>
+        <a href="" class="btn btn-primary">Reserve</a>
+        <h1 style="color: blue;">{{ request.user }}</h1>
+      </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+{% endblock body %}

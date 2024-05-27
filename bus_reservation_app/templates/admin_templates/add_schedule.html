@@ -1,0 +1,65 @@
+{% extends 'admin_templates/base.html' %}
+{% block body %}
+    <!-- Main content -->
+          <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Add Schedule</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form role="form" action="{% url "add_schedule_save" %}" method="post">
+                  {% csrf_token %}
+                <div class="card-body">
+                  <div class="form-group">
+                    <label>Bus Route</label>
+                    <select name="bus_route" class="form-control">
+                      {% for bus_route in bus_routes %}
+                      <option value="{{ bus_route.id }}">From {{ bus_route.origin }} To {{ bus_route.destination }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Bus Number</label>
+                    <select name="bus" class="form-control">
+                      {% for bus in buses %}
+                      <option value="{{ bus.id }}">{{ bus.bus_number }}</option>
+                      {% endfor %}
+                  </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Departure Time</label>
+                    <input type="datetime-local" class="form-control" name="departure_time" placeholder="Departure Time" id="id_departure_time" autocomplete="off">
+                  </div>
+                  <div class="form-group">
+                    <label>Arrival Time</label>
+                    <input type="datetime-local" class="form-control" name="arrival_time" placeholder="Arrival Time" id="id_arrival_time" autocomplete="off">
+                  </div>
+                  <div class="form-group">
+                      {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                  </div>
+
+                </div>
+                <!-- /.card-body -->
+
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary btn-block">Add Schedule</button>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
+          </div>
+          </div>
+    <!-- /.content -->
+{% endblock body %}
