@@ -5,19 +5,21 @@ from django.http import HttpResponse
 
 
 def admin_home(request):
-    # staff_count = Staff.objects.all().count()
-    # passenger_count = Passenger.objects.all().count()
-    # bus_route_count = BusRoute.objects.all().count()
-    # bus_count = Bus.objects.all().count()
-    # schedule_count = Schedule.objects.all().count()
+    passenger_count = Passenger.objects.all().count()
+    bus_route_count = BusRoute.objects.all().count()
+    bus_count = Bus.objects.all().count()
+    schedule_count = Schedule.objects.all().count()
+    payment_count = Payment.objects.all().count()
+    ticket_count = Ticket.objects.all().count()
 
 
     return render(request, "admin_templates/admin_home.html", {
-        # "staff_count": staff_count,
-        # "passenger_count": passenger_count,
-        # "bus_route_count": bus_route_count,
-        # "bus_count": bus_count,
-        # "schedule_count": schedule_count,
+        "passenger_count": passenger_count,
+        "bus_route_count": bus_route_count,
+        "bus_count": bus_count,
+        "payment_count": payment_count,
+        "schedule_count": schedule_count,
+        "ticket_count": ticket_count,
     })
 
 
@@ -467,22 +469,27 @@ def delete_ticket(request, ticket_id):
     return redirect("bus_ticketing_app:ticket")
 
 def admin_profile(request):
-    return render(request, "bus_ticketing_app/Admin/admin_profile.html", {
+    return render(request, "admin_templates/admin_profile.html", {
     })
     
 
 def admin_profile_save(request):
     if request.method == 'POST':
+        username = request.POST.get('username')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
         user = CustomUser.objects.get(id=request.user.id)
+        user.username = username
         user.first_name = first_name
         user.last_name = last_name
-        if password != None or password != "":
+        user.email = email
+        if password != None and password != "":
             user.set_password(password)
         user.save()
-        return redirect("bus_ticketing_app:admin_home")
+        messages.success(request, "Profile Updated")
+        return redirect("admin_profile")
     else:
-        return redirect("bus_ticketing_app:admin_home")
+        return redirect("admin_profile")

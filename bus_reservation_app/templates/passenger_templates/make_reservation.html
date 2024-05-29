@@ -1,0 +1,69 @@
+{% extends 'passenger_templates/base.html' %}
+{% load static %}
+
+{% block title %} Search Bus Routes {% endblock title%}
+
+{% block custom_css %}
+<style>
+  .search-content {
+    background-image: url("{% static 'dist/img/bus.jpeg' %}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 50px;
+    border-radius: 15px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 10px 20px;
+    font-size: 1.2em;
+  }
+  label {
+    font-size: 1.2em;
+  }
+  .form-control {
+    font-size: 1.1em;
+    padding: 10px;
+    border-radius: 5px;
+  }
+</style>
+{% endblock custom_css %}
+
+{% block body %}
+    <!-- Main content -->
+    <div class="search-content">
+      <div class="overlay">
+        <h1 class="text-center">Search Bus Routes</h1>
+        <form method="get" action="{% url 'search_result' %}">
+          <div class="form-group">
+            <label for="origin">Departure City</label>
+            <input type="text" class="form-control" id="origin" name="origin" placeholder="Enter departure city" required>
+          </div>
+          <div class="form-group">
+            <label for="destination">Destination City</label>
+            <input type="text" class="form-control" id="destination" name="destination" placeholder="Enter destination city" required>
+          </div>
+          <div class="form-group">
+            <label for="date">Travel Date</label>
+            <input type="date" class="form-control" id="date" name="date" required>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">Search</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- /.content -->
+{% endblock body %}

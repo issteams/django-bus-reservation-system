@@ -1,0 +1,98 @@
+{% extends 'passenger_templates/base.html' %}
+{% load static %}
+
+{% block title %}Search Results{% endblock title %}
+
+{% block custom_css %}
+<style>
+  .results-content {
+    background-image: url("{% static 'dist/img/bus.jpeg' %}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    padding: 50px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 15px;
+  }
+  .message {
+    font-size: 1.5em;
+    text-align: center;
+    margin-top: 20px;
+  }
+  .schedule-table {
+    width: 100%;
+    margin-top: 20px;
+  }
+  .schedule-table th, .schedule-table td {
+    padding: 15px;
+    text-align: left;
+    border: none; /* Remove border */
+  }
+  .schedule-table th {
+    background-color: #007bff;
+    color: white; /* Set text color for headers */
+  }
+  .schedule-table td {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white; /* Set text color for cells */
+  }
+  .reserve-btn {
+    background-color: #28a745;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+</style>
+{% endblock custom_css %}
+
+{% block body %}
+    <!-- Main content -->
+    <div class="results-content">
+      <div class="overlay">
+        {% if message %}
+          <div class="message">{{ message }}</div>
+        {% else %}
+          <h1 class="text-center mb-4">Available Schedules for {{ date }}</h1>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Route</th>
+                  <th>Bus</th>
+                  <th>Departure Time</th>
+                  <th>Arrival Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for schedule in schedules %}
+                  <tr>
+                    <td>{{ schedule.route.origin }} to {{ schedule.route.destination }}</td>
+                    <td>{{ schedule.bus.bus_number }}</td>
+                    <td>{{ schedule.departure_time }}</td>
+                    <td>{{ schedule.arrival_time }}</td>
+                    <td>
+                      <a href="{% url 'book_seat' schedule.id %}" class="reserve-btn">Reserve Seat</a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <!-- /.content -->
+{% endblock body %}

@@ -50,7 +50,8 @@
           <a href="{{ ticket }}" class="nav-link {% if request.path == ticket %} active {% endif %} {% if request.path == add_ticket %} active {% endif %}">Tickets</a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">Profile</a>
+          {% url 'admin_profile' as admin_profile %}
+          <a href="{{ admin_profile }}" class="nav-link {% if request.path == admin_profile %} active {% endif %}">Profile</a>
         </li>
         <li class="nav-item">
           <a href="{% url "logout" %}" class="nav-link">LogOut</a>

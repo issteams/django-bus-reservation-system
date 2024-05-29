@@ -9,10 +9,30 @@
     background-image: url("{% static 'dist/img/bus.jpeg' %}");
     background-repeat: no-repeat;
     background-size: cover;
-    height: 565px;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 50px;
+    border-radius: 15px;
   }
   .text-center {
-    padding-top: 100px;
+    margin-top: 20px;
+  }
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 10px 20px;
+    font-size: 1.2em;
+  }
+  h1 {
+    margin-top: 20px;
+    font-size: 2.5em;
   }
 </style>
 {% endblock custom_css %}
@@ -20,10 +40,10 @@
 {% block body %}
     <!-- Main content -->
     <div class="content">
-      <div class="container text-center">
-        <p class="text-center">With supporting text below as a natural lead-in to additional content.</p>
-        <a href="" class="btn btn-primary">Reserve</a>
-        <h1 style="color: blue;">{{ request.user }}</h1>
+      <div class="overlay text-center">
+        <h1>Welcome, {{ request.user }}</h1>
+        <p>Your journey starts here. Reserve your seat now and enjoy a comfortable and safe trip with us.</p>
+        <a href="{% url 'make_reservation' %}" class="btn btn-primary">Reserve</a>
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->

@@ -1,0 +1,76 @@
+{% extends 'passenger_templates/base.html' %}
+{% load static %}
+
+{% block title %}Book Seat{% endblock title %}
+
+{% block custom_css %}
+<style>
+    .booking-content {
+        background-image: url("{% static 'dist/img/bus.jpeg' %}");
+        background-size: cover;
+        background-position: center;
+        padding: 50px;
+        min-height: 100vh;
+        color: white;
+      }
+      .booking-form {
+        background-color: rgba(0, 0, 0, 0.8); /* Add some transparency to the form */
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+  .form-group {
+    margin-bottom: 20px;
+  }
+  .form-group label {
+    font-weight: bold;
+  }
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+  }
+  .btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+{% endblock custom_css %}
+
+{% block body %}
+<div class="booking-content">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="booking-form">
+          <h2 class="text-center mb-4">Book Seat</h2>
+          <form action="{% url 'get_book_seat' schedule.id %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="seat">Select Seat:</label>
+              <select name="seat_number" id="seat" class="form-control">
+                {% for seat in seats %}
+                  <option value="{{ seat }}">{{ seat }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group text-center">
+              <button type="submit" class="btn btn-primary">Confirm Booking</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}

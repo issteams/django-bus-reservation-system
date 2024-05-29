@@ -6,7 +6,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('signin/', views.signin, name='signin'),
     path('auth-signin/', views.auth_signin, name='auth-signin'),
-    path('auth-signin/', include('django.contrib.auth.urls')),
+    path('auth/', include('django.contrib.auth.urls')),
     path('signup/', views.signup, name='signup'),
     path('auth-signup/', views.auth_signup, name='auth-signup'),
 
@@ -49,9 +49,10 @@ urlpatterns = [
     path('admin_profile_save/', AdminViews.admin_profile_save, name='admin_profile_save'),
 
     # Passenger Paths
-   path('user_home/', PassengerViews.passenger_home, name='passenger_home'),
+   path('passenger_home/', PassengerViews.passenger_home, name='passenger_home'),
+   path('bus_schedules/', PassengerViews.bus_schedules, name='schedules'),
+   path('make_reservation/', PassengerViews.make_reservation, name='make_reservation'),
    path("search_result/", PassengerViews.search_result, name='search_result'),
-   path("select_schedule/<str:route_id>/<str:date>/", PassengerViews.select_schedule, name='select_schedule'),
    path("book_seat/<str:schedule_id>/", PassengerViews.book_seat, name='book_seat'),
    path("get_book_seat/<str:schedule_id>/", PassengerViews.get_book_seat, name='get_book_seat'),
    path("make_payment/<str:schedule_id>/", PassengerViews.make_payment, name='make_payment'),

@@ -16,7 +16,16 @@
       <!-- Left navbar links -->
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a href="" class="nav-link">Home</a>
+          {% url 'passenger_home' as passenger_home %}
+          <a href="{{ passenger_home }}" class="nav-link {% if request.path == passenger_home %} active {% endif %}">Home</a>
+        </li>
+        <li class="nav-item">
+          {% url 'schedules' as schedules %}
+          <a href="{{ schedules }}" class="nav-link {% if request.path == schedules %} active {% endif %}">Schedules</a>
+        </li>
+        <li class="nav-item">
+          {% url 'make_reservation' as make_reservation %}
+          <a href="{{ make_reservation }}" class="nav-link {% if request.path == make_reservation %} active {% endif %}">Make Reservation</a>
         </li>
         <li class="nav-item">
           <a href="" class="nav-link">Reservations</a>
