@@ -6,9 +6,10 @@ from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
 from datetime import datetime
-import paystack
-# from paystack.transaction import Transaction
+from paystackapi.paystack import Paystack
+from paystackapi.transaction import Transaction
 
+paystack = Paystack(secret_key=settings.PAYSTACK_SECRET_KEY)
 
 
 def passenger_home(request):
@@ -109,34 +110,49 @@ def get_book_seat(request, schedule_id):
         pass
 
 
+@login_required
 def make_payment(request, schedule_id):
     if request.method == 'POST':
         # Get payment details from the form
-        card_number = request.POST.get('card_number')
-        expiry_date = request.POST.get('expiry_date')
-        cvv = request.POST.get('cvv')
+        seat_number = request.POST.get('seat_number')
         amount = request.POST.get('amount')
+        user = request.user
 
-        # Initialize Paystack API
-        paystack_secret_key = 'your_paystack_secret_key'
-        paystack_api = paystack.SecretKey(paystack_secret_key)
-
-        # Create a Paystack transaction
         try:
-            transaction = Transaction.initialize(
-                amount=amount,
-                email=request.user.email,  # Assuming user is logged in
-                reference='your_transaction_reference'
-            )
-            # Redirect to Paystack payment page
-            return redirect(transaction['data']['authorization_url'])
-        except Exception as e:
-            messages.error(request, f"Payment failed: {e}")
-            return redirect('make_payment', schedule_id)
+            schedule = Schedule.objects.get(id=schedule_id)
+            passenger = Passenger.objects.get(admin=user)
 
-    # If request method is GET, render the payment template
-    schedule = Schedule.objects.get(id=schedule_id)
-    return render(request, "passenger_templates/payment.html", {"schedule": schedule})
+            # Check if the seat is already booked
+            if Ticket.objects.filter(schedule=schedule, seat_number=seat_number).exists():
+                messages.error(request, "Seat Already Booked")
+                return redirect('book_seat', schedule_id)
+
+            # Initialize Paystack transaction
+            response = Transaction.initialize(
+                reference=f"{schedule_id}_{user.id}_{seat_number}",
+                amount=int(amount) * 100,  # Paystack requires amount in kobo
+                email=user.email
+            )
+
+            if response['status']:
+                authorization_url = response['data']['authorization_url']
+                # Create a pending ticket
+                Ticket.objects.create(
+                    passenger=passenger,
+                    schedule=schedule,
+                    seat_number=seat_number,
+                    status="pending",
+                    payment_reference=response['data']['reference']
+                )
+                return redirect(authorization_url)
+            else:
+                messages.error(request, "Payment initialization failed")
+                return redirect('make_payment', schedule_id)
+        except Schedule.DoesNotExist:
+            return HttpResponse("Schedule Not Found")
+    else:
+        schedule = Schedule.objects.get(id=schedule_id)
+        return render(request, "passenger_templates/payment.html", {"schedule": schedule})
 
 @login_required
 def comfirm_payment(request, payment_id):
