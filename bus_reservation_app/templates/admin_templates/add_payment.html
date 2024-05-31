@@ -14,10 +14,10 @@
                   {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
-                    <label>Passenger</label>
-                    <select name="passenger" class="form-control">
-                      {% for passenger in passengers %}
-                      <option value="{{ passenger.admin.id }}">{{ passenger.admin.username }}</option>
+                    <label>Student</label>
+                    <select name="student" class="form-control">
+                      {% for student in students %}
+                      <option value="{{ student.admin.id }}">{{ student.admin.username }}</option>
                       {% endfor %}
                     </select>
                   </div>

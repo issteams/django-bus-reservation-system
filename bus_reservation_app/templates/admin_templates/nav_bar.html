@@ -20,9 +20,9 @@
           <a href="{{ admin_home }}" class="nav-link {% if request.path == admin_home %} active {% endif %}">Home</a>
         </li>
         <li class="nav-item">
-          {% url "passengers" as passengers %}
-          {% url "add_passenger" as add_passenger %}
-          <a href="{{ passengers }}" class="nav-link {% if request.path == passengers %} active {% endif %} {% if request.path == add_passenger %} active {% endif %}">Passangers</a>
+          {% url "students" as students %}
+          {% url "add_student" as add_student %}
+          <a href="{{ students }}" class="nav-link {% if request.path == students %} active {% endif %} {% if request.path == add_student %} active {% endif %}">Students</a>
         </li>
         <li class="nav-item">
           {% url 'bus_route' as bus_route %}

@@ -23,7 +23,7 @@ class Admin(models.Model):
 
 # Student Model
 class Student(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=255, null=True)
     college = models.CharField(max_length=255, null=True)

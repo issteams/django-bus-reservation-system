@@ -24,7 +24,7 @@
           <table class="table table-hover text-nowrap">
             <thead>
                 <th>ID</th>
-                <th>Passenger</th>
+                <th>Student</th>
                 <th>Schedule</th>
                 <th>Seat Number</th>
                 <th>Paid By</th>
@@ -36,10 +36,10 @@
               {% for ticket in tickets %}
               <tr>
                 <td>{{ ticket.id }}</td>
-                <td>{{ ticket.passenger_id.admin.username }}</td>
+                <td>{{ ticket.student.admin.username }}</td>
                 <td>From {{ ticket.schedule.departure_time }} To {{ ticket.schedule.arrival_time }}</td>
                 <td>{{ ticket.seat_number }}</td>
-                <td>{{ ticket.payment.passenger_id.admin.username }}</td>
+                <td>{{ ticket.payment.student.admin.username }}</td>
                 <td>{{ ticket.status }}</td>
                 <td>{{ ticket.booking_date }}</td>
                 <td><a href="{% url 'edit_ticket' ticket.id %}" class="btn btn-success">Edit</a></td>

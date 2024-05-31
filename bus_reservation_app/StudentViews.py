@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import BusRoute, Schedule, Ticket, Payment, Passenger
+from .models import BusRoute, Schedule, Ticket, Payment, Student
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -11,18 +11,18 @@ import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-def passenger_home(request):
-    return render(request, "passenger_templates/passenger_home.html", {})
+def student_home(request):
+    return render(request, "student_templates/student_home.html", {})
 
 def make_reservation(request):
     routes = BusRoute.objects.all()
-    return render(request, "passenger_templates/make_reservation.html", {
+    return render(request, "student_templates/make_reservation.html", {
         "routes": routes,
     })
-    
+
 def bus_schedules(request):
     schedules = Schedule.objects.all()
-    return render(request, "passenger_templates/schedules.html", {
+    return render(request, "student_templates/schedules.html", {
         "schedules": schedules,
     })
 
@@ -38,7 +38,7 @@ def search_result(request):
             try:
                 travel_date = datetime.strptime(date, '%Y-%m-%d')
             except ValueError:
-                return render(request, "passenger_templates/search_result.html", {
+                return render(request, "student_templates/search_result.html", {
                     "message": "Invalid date format. Please use YYYY-MM-DD."
                 })
 
@@ -49,20 +49,20 @@ def search_result(request):
             schedules = Schedule.objects.filter(route__in=routes, departure_time__date=travel_date)
 
             if schedules.exists():
-                return render(request, "passenger_templates/search_result.html", {
+                return render(request, "student_templates/search_result.html", {
                     "schedules": schedules,
                     "date": date,
                 })
             else:
-                return render(request, "passenger_templates/search_result.html", {
+                return render(request, "student_templates/search_result.html", {
                     "message": "No Result",
                 })
         else:
-            return render(request, "passenger_templates/search_result.html", {
+            return render(request, "student_templates/search_result.html", {
                 "message": "Please provide origin, destination, and date."
             })
     else:
-        return render(request, "passenger_templates/search_result.html", {
+        return render(request, "student_templates/search_result.html", {
             "message": "Invalid request method."
         })
 
@@ -74,7 +74,7 @@ def book_seat(request, schedule_id):
     # Create a list of available seats based on the capacity of the bus
     seats = [seat for seat in range(1, schedule.bus.capacity + 1)]
     
-    return render(request, "passenger_templates/book_seat.html", {
+    return render(request, "student_templates/book_seat.html", {
         "schedule": schedule,
         "seats": seats,
     })
@@ -85,10 +85,10 @@ def get_book_seat(request, schedule_id):
         seat_number = request.POST.get('seat_number')
         user = request.user.id
         try:
-            passenger = Passenger.objects.get(admin=user)
-        except Passenger.DoesNotExist:
-            # Handle the case where the passenger doesn't exist
-            messages.error(request, "Passenger not found")
+            student = Student.objects.get(admin=user)
+        except Student.DoesNotExist:
+            # Handle the case where the student doesn't exist
+            messages.error(request, "Student not found")
             return redirect("book_seat", schedule_id)
 
         try:
@@ -102,8 +102,8 @@ def get_book_seat(request, schedule_id):
             messages.error(request, "Seat already booked")
             return redirect("book_seat", schedule_id)
 
-        # Create a new ticket for the passenger
-        ticket = Ticket.objects.create(passenger=passenger, schedule=schedule, seat_number=seat_number, status="pending")
+        # Create a new ticket for the student
+        ticket = Ticket.objects.create(student=student, schedule=schedule, seat_number=seat_number, status="pending")
         messages.success(request, "Seat booked successfully")
         return redirect("make_payment", schedule_id)
 
@@ -121,7 +121,7 @@ def make_payment(request, schedule_id):
 
         try:
             schedule = Schedule.objects.get(id=schedule_id)
-            passenger = Passenger.objects.get(admin=user)
+            student = Student.objects.get(admin=user)
 
             if Ticket.objects.filter(schedule=schedule, seat_number=seat_number).exists():
                 messages.error(request, "Seat Already Booked")
@@ -148,7 +148,7 @@ def make_payment(request, schedule_id):
 
                 # Create a pending ticket
                 ticket = Ticket.objects.create(
-                    passenger=passenger,
+                    student=student,
                     schedule=schedule,
                     seat_number=seat_number,
                     status="pending",
@@ -162,14 +162,14 @@ def make_payment(request, schedule_id):
 
         except Schedule.DoesNotExist:
             return HttpResponse("Schedule Not Found")
-        except Passenger.DoesNotExist:
-            return HttpResponse("Passenger Not Found")
+        except Student.DoesNotExist:
+            return HttpResponse("Student Not Found")
     else:
         schedule = get_object_or_404(Schedule, id=schedule_id)
         seat_number = request.GET.get('seat_number', 'Unknown')
         amount = 10000
 
-        return render(request, "passenger_templates/payment.html", {
+        return render(request, "student_templates/payment.html", {
             "schedule": schedule,
             "amount": amount,
             "seat_number": seat_number,

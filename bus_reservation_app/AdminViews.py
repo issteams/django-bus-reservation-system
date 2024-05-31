@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
-from .models import CustomUser, Passenger, BusRoute, Bus, Schedule, Payment, Ticket
+from .models import CustomUser, Student, BusRoute, Bus, Schedule, Payment, Ticket
 from django.contrib import messages
 from django.http import HttpResponse
 
 
 def admin_home(request):
-    passenger_count = Passenger.objects.all().count()
+    Student_count = Student.objects.all().count()
     bus_route_count = BusRoute.objects.all().count()
     bus_count = Bus.objects.all().count()
     schedule_count = Schedule.objects.all().count()
@@ -14,7 +14,7 @@ def admin_home(request):
 
 
     return render(request, "admin_templates/admin_home.html", {
-        "passenger_count": passenger_count,
+        "Student_count": student_count,
         "bus_route_count": bus_route_count,
         "bus_count": bus_count,
         "payment_count": payment_count,
@@ -23,18 +23,18 @@ def admin_home(request):
     })
 
 
-def passenger(request):
-    passengers = Passenger.objects.all()
-    return render(request, "admin_templates/passengers.html", {
-        "passengers": passengers,
+def student(request):
+    students = Student.objects.all()
+    return render(request, "admin_templates/students.html", {
+        "students": students,
     })
     
-def add_passenger(request):
-    return render(request, "admin_templates/add_passenger.html")
+def add_student(request):
+    return render(request, "admin_templates/add_student.html")
 
     
 
-def add_passenger_save(request):
+def add_student_save(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -46,14 +46,14 @@ def add_passenger_save(request):
 
         try:
             user = CustomUser.objects.create_user(username=username, email=email, first_name=first_name, last_name=last_name, password=password, user_type=2)
-            user.passenger.phone_number = phone_number
-            user.passenger.address = address
+            user.student.phone_number = phone_number
+            user.student.address = address
             user.save()
-            messages.success(request, "Passenger Added Successfully!")
-            return redirect('add_passenger')
+            messages.success(request, "Student Added Successfully!")
+            return redirect('add_student')
         except:
-            messages.error(request, "Failed to Add Passenger!")
-            return redirect('add_passenger')
+            messages.error(request, "Failed to Add Student!")
+            return redirect('add_student')
     else:
         return HttpResponse("Method not allowed")
 
@@ -112,15 +112,15 @@ def add_bus_save(request):
     else:
         return HttpResponse("Method not allowed")
 
-def edit_passenger(request, passenger_id):
-    passenger = Passenger.objects.get(admin=passenger_id)
-    return render(request, "admin_templates/edit_passenger.html", {
-        "passenger": passenger,
+def edit_student(request, student_id):
+    student = Student.objects.get(admin=student_id)
+    return render(request, "admin_templates/edit_student.html", {
+        "student": student,
     })
 
-def edit_passenger_save(request):
+def edit_student_save(request):
     if request.method == 'POST':
-        passenger_id = request.POST.get('passenger_id')
+        student_id = request.POST.get('student_id')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         username = request.POST.get('username')
@@ -130,24 +130,24 @@ def edit_passenger_save(request):
 
         try:
             #Updating CustomUser Model
-            user = CustomUser.objects.get(id=passenger_id)
+            user = CustomUser.objects.get(id=student_id)
             user.username = username
             user.first_name = first_name
             user.last_name = last_name
             user.email = email 
             user.save()
 
-            # Updating Passenger Model
-            passenger = Passenger.objects.get(admin=passenger_id)
-            passenger.address = address
-            passenger.phone_number = phone_number
-            passenger.save()
+            # Updating Student Model
+            student = Student.objects.get(admin=passenger_id)
+            student.address = address
+            student.phone_number = phone_number
+            student.save()
 
-            messages.success(request, "Passenger Updated Successfully!")
-            return redirect('edit_passenger', passenger_id)
+            messages.success(request, "Student Updated Successfully!")
+            return redirect('edit_student', student_id)
         except:
-            messages.error(request, "Failed to Update Passenger!")
-            return redirect('edit_passenger', passenger_id)
+            messages.error(request, "Failed to Update Student!")
+            return redirect('edit_student', student_id)
     else:
         return HttpResponse("Method not allowed")
     
@@ -285,11 +285,11 @@ def delete_schedule(request, schedule_id):
     return redirect("schedule")
 
 
-def delete_passenger(request, passenger_id):
-    passenger = CustomUser.objects.get(id=passenger_id)
-    passenger.delete()
-    messages.success(request, "Passenger Deleted")
-    return redirect('passengers')
+def delete_student(request, student_id):
+    student = CustomUser.objects.get(id=student_id)
+    student.delete()
+    messages.success(request, "Student Deleted")
+    return redirect('students')
 
 def delete_bus_route(request, bus_route_id):
     bus_route = BusRoute.objects.get(id=bus_route_id)
@@ -388,19 +388,19 @@ def ticket(request):
     
 
 def add_ticket(request):
-    passengers = Passenger.objects.all()
+    students = Student.objects.all()
     schedules = Schedule.objects.all()
     payments = Payment.objects.all()
     return render(request, "admin_templates/add_ticket.html", {
-        "passengers": passengers,
+        "students": students,
         "schedules": schedules,
         "payments": payments,
     })
     
 def add_ticket_save(request):
     if request.method == "POST":
-        passenger_id = request.POST.get('passenger')
-        passenger = Passenger.objects.get(admin=passenger_id)
+        student_id = request.POST.get('student')
+        student = Student.objects.get(admin=student_id)
         schedule_id = request.POST.get('schedule')
         schedule = Schedule.objects.get(id=schedule_id)
         payment_id = request.POST.get('payment')
@@ -409,7 +409,7 @@ def add_ticket_save(request):
         status = request.POST.get('status')
 
         try:
-            Ticket.objects.create(passenger_id=passenger, schedule=schedule, payment=payment, status=status, seat_number=seat_number)
+            Ticket.objects.create(student=student, schedule=schedule, payment=payment, status=status, seat_number=seat_number)
             messages.success(request, "Ticket Added Successfully!")
             return redirect('bus_ticketing_app:ticket')
         except:
@@ -419,12 +419,12 @@ def add_ticket_save(request):
         return HttpResponse("Method not allowed")
 
 def edit_ticket(request, ticket_id):
-    passengers = Passenger.objects.all()
+    students = Student.objects.all()
     schedules = Schedule.objects.all()
     payments = Payment.objects.all()
     ticket = Ticket.objects.get(id=ticket_id)
-    return render(request, "bus_ticketing_app/Admin/edit_ticket.html", {
-        "passengers": passengers,
+    return render(request, "admin_templates/edit_ticket.html", {
+        "students": students,
         "schedules": schedules,
         "payments": payments,
         "ticket": ticket,
@@ -434,8 +434,8 @@ def edit_ticket(request, ticket_id):
 def edit_ticket_save(request):
     if request.method == "POST":
         ticket_id = request.POST.get('ticket_id')
-        passenger_id = request.POST.get('passenger')
-        passenger = Passenger.objects.get(admin=passenger_id)
+        student_id = request.POST.get('student')
+        student = Student.objects.get(admin=student_id)
         schedule_id = request.POST.get('schedule')
         schedule = Schedule.objects.get(id=schedule_id)
         payment_id = request.POST.get('payment')
@@ -446,7 +446,7 @@ def edit_ticket_save(request):
 
         # try:
         ticket = Ticket.objects.get(id=ticket_id)
-        ticket.passenger_id = passenger
+        ticket.student = student
         ticket.schedule = schedule
         ticket.payment_id = payment
         ticket.seat_number = seat_number

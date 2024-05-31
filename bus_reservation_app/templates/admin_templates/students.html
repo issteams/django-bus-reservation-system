@@ -6,7 +6,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title" style="color: black;">Passengers</h3>
+          <h3 class="card-title" style="color: black;">Students</h3>
 
           <div class="card-tools">
             <div class="input-group input-group-sm" style="width: 150px;">
@@ -36,23 +36,23 @@
               </tr>
             </thead>
             <tbody>
-              {% for passenger in passengers %}
+              {% for student in students %}
               <tr>
-                <td>{{ passenger.admin.id }}</td>
-                <td>{{ passenger.admin.username }}</td>
-                <td>{{ passenger.admin.first_name }}</td>
-                <td>{{ passenger.admin.last_name }}</td>
-                <td>{{ passenger.admin.email }}</td>
-                <td>{{ passenger.phone_number }}</td>
-                <td>{{ passenger.address }}</td>
-                <td>{{ passenger.admin.last_login }}</td>
-                <td>{{ passenger.admin.date_joined }}</td>
-                <td><a href="{% url 'edit_passenger' passenger.admin.id %}" class="btn btn-success">Edit</a></td>
-                <td><a href="{% url 'delete_passenger' passenger.admin.id %}" class="btn btn-danger">Delete</a></td>
+                <td>{{ student.admin.id }}</td>
+                <td>{{ student.admin.username }}</td>
+                <td>{{ student.admin.first_name }}</td>
+                <td>{{ student.admin.last_name }}</td>
+                <td>{{ student.admin.email }}</td>
+                <td>{{ student.phone_number }}</td>
+                <td>{{ student.address }}</td>
+                <td>{{ student.admin.last_login }}</td>
+                <td>{{ student.admin.date_joined }}</td>
+                <td><a href="{% url 'edit_student' student.admin.id %}" class="btn btn-success">Edit</a></td>
+                <td><a href="{% url 'delete_student' student.admin.id %}" class="btn btn-danger">Delete</a></td>
               </tr>
               {% endfor %}
             </tbody>
-            <a href="{% url "add_passenger" %}" class="btn btn-primary" style="color: white; text-decoration: none;margin: 5px;">Add Passenger</a>
+            <a href="{% url "add_student" %}" class="btn btn-primary" style="color: white; text-decoration: none;margin: 5px;">Add Student</a>
             {% if messages %}
               {% for message in messages %}
                 {% if message.tags == 'error' %}

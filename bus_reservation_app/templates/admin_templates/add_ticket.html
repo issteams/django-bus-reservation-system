@@ -6,11 +6,11 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Staff</h3>
+                <h3 class="card-title">Add Ticket</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" action="{% url "add_passenger_save" %}" method="post">
+              <form role="form" action="" method="post">
                   {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
@@ -58,7 +58,7 @@
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block">Add Passenger</button>
+                  <button type="submit" class="btn btn-primary btn-block">Add Ticket</button>
                 </div>
               </form>
             </div>

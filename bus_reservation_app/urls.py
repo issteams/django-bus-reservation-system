@@ -12,12 +12,12 @@ urlpatterns = [
 
     # Admin Paths
     path('admin_home/', AdminViews.admin_home, name='admin_home'),
-    path('passengers/', AdminViews.passenger, name='passengers'),
-    path('passengers/add_passenger/', AdminViews.add_passenger, name='add_passenger'),
-    path('passengers/add_passenger_save/', AdminViews.add_passenger_save, name='add_passenger_save'),
-    path('passengers/edit_passenger/<str:passenger_id>/', AdminViews.edit_passenger, name='edit_passenger'),
-    path('passengers/edit_passenger_save/', AdminViews.edit_passenger_save, name='edit_passenger_save'),
-    path('passengers/delete_passenger/<str:passenger_id>/', AdminViews.delete_passenger, name='delete_passenger'),
+    path('students/', AdminViews.student, name='students'),
+    path('students/add_student/', AdminViews.add_student, name='add_student'),
+    path('students/add_student_save/', AdminViews.add_student_save, name='add_student_save'),
+    path('students/edit_student/<str:student_id>/', AdminViews.edit_student, name='edit_student'),
+    path('students/edit_student_save/', AdminViews.edit_student_save, name='edit_student_save'),
+    path('students/delete_student/<str:student_id>/', AdminViews.delete_student, name='delete_student'),
     path('bus_route/', AdminViews.bus_route, name='bus_route'),
     path('bus_route/add_bus_route/', AdminViews.add_bus_route, name='add_bus_route'),
     path('bus_route/add_bus_route_save/', AdminViews.add_bus_route_save, name='add_bus_route_save'),
@@ -51,8 +51,8 @@ urlpatterns = [
     path('admin_profile/', AdminViews.admin_profile, name='admin_profile'),
     path('admin_profile_save/', AdminViews.admin_profile_save, name='admin_profile_save'),
 
-    # Passenger Paths
-   path('passenger_home/', StudentViews.passenger_home, name='passenger_home'),
+    # Student Paths
+   path('student_home/', StudentViews.student_home, name='student_home'),
    path('bus_schedules/', StudentViews.bus_schedules, name='schedules'),
    path('make_reservation/', StudentViews.make_reservation, name='make_reservation'),
    path("search_result/", StudentViews.search_result, name='search_result'),

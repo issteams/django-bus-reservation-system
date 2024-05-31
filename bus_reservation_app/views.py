@@ -28,7 +28,7 @@ def auth_signin(request):
             if user.user_type == 1:
                 return redirect('admin_home')
             else:
-                return redirect("passenger_home")
+                return redirect("student_home")
         else:
             messages.error(request,"Invalid Login Details")
             return redirect("signin")
@@ -45,12 +45,12 @@ def auth_signup(request):
 
         try:
             user = CustomUser.objects.create_user(username=username, password=password, first_name=first_name, last_name=last_name, email=email, user_type=2)
-            user.passenger.phone_number = phone_number
-            user.passenger.address = address
+            user.student.phone_number = phone_number
+            user.student.address = address
             user.save()
             login(request, user)
             messages.success(request, f"Welcome {user.username}")
-            return redirect("passenger_home")
+            return redirect("student_home")
         
         except Exception as e:
             print(e)

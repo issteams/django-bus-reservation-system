@@ -6,40 +6,41 @@
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Passenger</h3>
+                <h3 class="card-title">Edit Student</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" action="{% url "add_passenger_save" %}" method="post">
+              <form role="form" action="{% url "edit_student_save" %}" method="post">
                   {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
                     <label>Email address</label>
-                    <input type="email" class="form-control" name="email" placeholder="Enter email" id="id_email" autocomplete="off">
+                    <input type="email" value="{{ student.admin.email }}" class="form-control" name="email" placeholder="Enter email" id="id_email" autocomplete="off">
                   </div>
                   <div class="form-group">
                     <label>Password</label>
-                    <input type="password" class="form-control" placeholder="Password" name="password">
+                    <input type="password"  class="form-control" placeholder="Only if you want to change password" name="password">
+                    <input type="hidden" value="{{ student.admin.id }}" name="student_id">
                   </div>
                    <div class="form-group">
                     <label>First Name</label>
-                    <input type="text" class="form-control" placeholder="First Name" name="first_name">
+                    <input type="text" value="{{ student.admin.first_name }}" class="form-control" placeholder="First Name" name="first_name">
                   </div>
                    <div class="form-group">
                     <label>Last Name</label>
-                    <input type="text" class="form-control" placeholder="Last Name" name="last_name">
+                    <input type="text" value="{{ student.admin.last_name }}" class="form-control" placeholder="Last Name" name="last_name">
                   </div>
                    <div class="form-group">
                     <label>Username</label>
-                    <input type="text" class="form-control" placeholder="Username" name="username" id="id_username" autocomplete="off">
+                    <input type="text" value="{{ student.admin.username }}" class="form-control" placeholder="Username" name="username" id="id_username" autocomplete="off">
                   </div>
                   <div class="form-group">
                     <label>Phone Number</label>
-                    <input type="text" class="form-control" placeholder="Phone Number" name="phone_number" id="id_phone_number" autocomplete="off">
+                    <input type="text" value="{{ student.phone_number }}" class="form-control" placeholder="Phone Number" name="phone_number" id="id_phone_number" autocomplete="off">
                   </div>
                   <div class="form-group">
                     <label>Address</label>
-                    <input type="text" class="form-control" placeholder="Address" name="address">
+                    <input type="text" value="{{ student.address }}" class="form-control" placeholder="Address" name="address">
                   </div>
                       <div class="form-group">
                       {% if messages %}
@@ -58,7 +59,7 @@
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block">Add Passenger</button>
+                  <button type="submit" class="btn btn-primary btn-block">Save Student</button>
                 </div>
               </form>
             </div>
