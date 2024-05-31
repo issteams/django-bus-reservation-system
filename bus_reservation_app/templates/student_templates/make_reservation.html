@@ -1,4 +1,4 @@
-{% extends 'passenger_templates/base.html' %}
+{% extends 'student_templates/base.html' %}
 {% load static %}
 
 {% block title %}Search Bus Routes{% endblock title%}
@@ -37,6 +37,7 @@
     font-size: 1.1em;
     padding: 10px;
     border-radius: 5px;
+    height: 50px;
   }
 </style>
 {% endblock custom_css %}
@@ -47,7 +48,7 @@
     <h1 class="text-center">Search Bus Routes</h1>
     <form method="get" action="{% url 'search_result' %}">
       <div class="form-group">
-        <label for="origin">Departure City</label>
+        <label for="origin">Departure Place</label>
         <select id="origin" name="origin" class="form-control" required>
           <option value="" disabled selected>Select Origin</option>
           {% for route in routes %}
@@ -56,7 +57,7 @@
         </select>
       </div>
       <div class="form-group">
-        <label for="destination">Destination City</label>
+        <label for="destination">Destination Place</label>
         <select id="destination" name="destination" class="form-control" required>
           <option value="" disabled selected>Select Destination</option>
           {% for route in routes %}

@@ -5,7 +5,7 @@ from django.http import HttpResponse
 
 
 def admin_home(request):
-    Student_count = Student.objects.all().count()
+    student_count = Student.objects.all().count()
     bus_route_count = BusRoute.objects.all().count()
     bus_count = Bus.objects.all().count()
     schedule_count = Schedule.objects.all().count()
@@ -14,7 +14,7 @@ def admin_home(request):
 
 
     return render(request, "admin_templates/admin_home.html", {
-        "Student_count": student_count,
+        "student_count": student_count,
         "bus_route_count": bus_route_count,
         "bus_count": bus_count,
         "payment_count": payment_count,

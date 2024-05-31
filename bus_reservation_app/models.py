@@ -27,7 +27,7 @@ class Student(models.Model):
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=255, null=True)
     college = models.CharField(max_length=255, null=True)
-    year_of_study = models.IntegerField()
+    year_of_study = models.IntegerField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -128,7 +128,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         if instance.user_type == 1:
             Admin.objects.create(admin=instance)
         elif instance.user_type == 2:
-            Student.objects.create(user=instance, address="")
+            Student.objects.create(admin=instance, address="")
 
 @receiver(post_save, sender=CustomUser)
 def save_user_profile(sender, instance, **kwargs):
