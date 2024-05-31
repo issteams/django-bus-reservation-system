@@ -1,12 +1,12 @@
 {% extends 'passenger_templates/base.html' %}
 {% load static %}
 
-{% block title %}Search Results{% endblock title %}
+{% block title %}Schedules{% endblock title %}
 
 {% block custom_css %}
 <style>
   .results-content {
-    background-image: url("{% static 'dist/img/bus.jpeg' %}");
+    background-image: url("{% static 'dist/img/buss.jpeg' %}");
     background-repeat: no-repeat;
     background-size: cover;
     min-height: 100vh;
@@ -64,7 +64,7 @@
         {% if message %}
           <div class="message">{{ message }}</div>
         {% else %}
-          <h1 class="text-center mb-4">Available Schedules for {{ date }}</h1>
+          <h1 class="text-center mb-4">Available Schedules</h1>
           <div class="table-responsive">
             <table class="table">
               <thead>

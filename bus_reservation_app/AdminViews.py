@@ -114,7 +114,7 @@ def add_bus_save(request):
 
 def edit_passenger(request, passenger_id):
     passenger = Passenger.objects.get(admin=passenger_id)
-    return render(request, "bus_ticketing_app/Admin/edit_passenger.html", {
+    return render(request, "admin_templates/edit_passenger.html", {
         "passenger": passenger,
     })
 
@@ -129,6 +129,7 @@ def edit_passenger_save(request):
         address = request.POST.get('address')
 
         try:
+            #Updating CustomUser Model
             user = CustomUser.objects.get(id=passenger_id)
             user.username = username
             user.first_name = first_name
@@ -136,16 +137,17 @@ def edit_passenger_save(request):
             user.email = email 
             user.save()
 
+            # Updating Passenger Model
             passenger = Passenger.objects.get(admin=passenger_id)
             passenger.address = address
             passenger.phone_number = phone_number
             passenger.save()
 
             messages.success(request, "Passenger Updated Successfully!")
-            return redirect('bus_ticketing_app:passenger')
+            return redirect('edit_passenger', passenger_id)
         except:
             messages.error(request, "Failed to Update Passenger!")
-            return redirect('bus_ticketing_app:staff')
+            return redirect('edit_passenger', passenger_id)
     else:
         return HttpResponse("Method not allowed")
     
@@ -282,17 +284,12 @@ def delete_schedule(request, schedule_id):
     messages.error(request, "Schedule Deleted")
     return redirect("schedule")
 
-def delete_staff(request, staff_id):
-    staff = Staff.objects.get(admin=staff_id)
-    staff.admin.delete()
-    messages.success(request, "Staff Deleted")
-    return redirect('bus_ticketing_app:staff')
 
 def delete_passenger(request, passenger_id):
     passenger = CustomUser.objects.get(id=passenger_id)
     passenger.delete()
     messages.success(request, "Passenger Deleted")
-    return redirect('bus_ticketing_app:passenger')
+    return redirect('passengers')
 
 def delete_bus_route(request, bus_route_id):
     bus_route = BusRoute.objects.get(id=bus_route_id)

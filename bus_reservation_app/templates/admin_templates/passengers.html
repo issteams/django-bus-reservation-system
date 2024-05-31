@@ -47,8 +47,8 @@
                 <td>{{ passenger.address }}</td>
                 <td>{{ passenger.admin.last_login }}</td>
                 <td>{{ passenger.admin.date_joined }}</td>
-                <td><a href="" class="btn btn-success">Edit</a></td>
-                <td><a href="" class="btn btn-danger">Delete</a></td>
+                <td><a href="{% url 'edit_passenger' passenger.admin.id %}" class="btn btn-success">Edit</a></td>
+                <td><a href="{% url 'delete_passenger' passenger.admin.id %}" class="btn btn-danger">Delete</a></td>
               </tr>
               {% endfor %}
             </tbody>

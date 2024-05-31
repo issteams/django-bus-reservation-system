@@ -15,6 +15,9 @@ urlpatterns = [
     path('passengers/', AdminViews.passenger, name='passengers'),
     path('passengers/add_passenger/', AdminViews.add_passenger, name='add_passenger'),
     path('passengers/add_passenger_save/', AdminViews.add_passenger_save, name='add_passenger_save'),
+    path('passengers/edit_passenger/<str:passenger_id>/', AdminViews.edit_passenger, name='edit_passenger'),
+    path('passengers/edit_passenger_save/', AdminViews.edit_passenger_save, name='edit_passenger_save'),
+    path('passengers/delete_passenger/<str:passenger_id>/', AdminViews.delete_passenger, name='delete_passenger'),
     path('bus_route/', AdminViews.bus_route, name='bus_route'),
     path('bus_route/add_bus_route/', AdminViews.add_bus_route, name='add_bus_route'),
     path('bus_route/add_bus_route_save/', AdminViews.add_bus_route_save, name='add_bus_route_save'),
@@ -55,7 +58,7 @@ urlpatterns = [
    path("search_result/", PassengerViews.search_result, name='search_result'),
    path("book_seat/<str:schedule_id>/", PassengerViews.book_seat, name='book_seat'),
    path("get_book_seat/<str:schedule_id>/", PassengerViews.get_book_seat, name='get_book_seat'),
-   path("make_payment/<str:schedule_id>/", PassengerViews.make_payment, name='make_payment'),
+   path("make_payment/schedule_id=<str:schedule_id>/", PassengerViews.make_payment, name='make_payment'),
    path("comfirm_payment/<str:payment_id>/", PassengerViews.comfirm_payment, name='comfirm_pament'),
 
 

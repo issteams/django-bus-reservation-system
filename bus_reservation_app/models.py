@@ -8,9 +8,12 @@ from django.utils import timezone
 class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (
         (1, "admin"),
-        (2, "passenger"),
+        (2, "student"),
     )
     user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, default=1)
+    student_id = models.CharField(max_length=10, unique=True, null=True, blank=True)
+    department = models.CharField(max_length=100, null=True, blank=True)
+    year_of_study = models.PositiveIntegerField(null=True, blank=True)
 
 # Admin Model
 class Admin(models.Model):
@@ -18,11 +21,13 @@ class Admin(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-# Passenger Model
-class Passenger(models.Model):
-    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+# Student Model
+class Student(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=255, null=True)
+    college = models.CharField(max_length=255, null=True)
+    year_of_study = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -86,7 +91,7 @@ class Schedule(models.Model):
 
 # Payment Model
 class Payment(models.Model):
-    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='payments')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='payments')
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateTimeField(auto_now_add=True)
@@ -104,14 +109,13 @@ class Ticket(models.Model):
         ('confirmed', 'Confirmed'),
         ('cancelled', 'Cancelled'),
     ]
-    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE, related_name='tickets')
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='tickets')
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, related_name='tickets')
     seat_number = models.CharField(max_length=10)
     payment = models.ForeignKey(Payment, on_delete=models.CASCADE, null=True, related_name='tickets')
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
     booking_date = models.DateTimeField(auto_now_add=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    payment_reference = models.CharField(max_length=100, null=True, blank=True) 
     
     class Meta:
         unique_together = ('schedule', 'seat_number')
@@ -124,11 +128,11 @@ def create_user_profile(sender, instance, created, **kwargs):
         if instance.user_type == 1:
             Admin.objects.create(admin=instance)
         elif instance.user_type == 2:
-            Passenger.objects.create(admin=instance, address="")
+            Student.objects.create(user=instance, address="")
 
 @receiver(post_save, sender=CustomUser)
 def save_user_profile(sender, instance, **kwargs):
     if instance.user_type == 1:
         instance.admin.save()
     elif instance.user_type == 2:
-        instance.passenger.save()
+        instance.student.save()

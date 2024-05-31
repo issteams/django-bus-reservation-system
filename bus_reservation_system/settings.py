@@ -129,9 +129,5 @@ AUTH_USER_MODEL = 'bus_reservation_app.CustomUser'
 # Registering Custom Backend "EmailBackEnd"
 AUTHENTICATION_BACKENDS = ['bus_reservation_app.EmailBackEnd.EmailBackEnd']
 
-PAYSTACK_PUBLIC_KEY = 'pk_test_00c5b29d8c7bd153dce4c3208c51b883bebd4c53'
-PAYSTACK_SECRET_KEY = 'sk_test_9001196602271174413e9628272a22c775b37e26'
-
-
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/auth-signin/'
+STRIPE_PUBLIC_KEY = 'pk_test_00c5b29d8c7bd153dce4c3208c51b883bebd4c53'
+STRIPE_SECRET_KEY = 'sk_test_9001196602271174413e9628272a22c775b37e26'
