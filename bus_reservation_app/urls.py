@@ -1,5 +1,5 @@
 from django.urls import path, include
-from . import views, AdminViews, PassengerViews
+from . import views, AdminViews, StudentViews
 
 
 urlpatterns = [
@@ -52,14 +52,14 @@ urlpatterns = [
     path('admin_profile_save/', AdminViews.admin_profile_save, name='admin_profile_save'),
 
     # Passenger Paths
-   path('passenger_home/', PassengerViews.passenger_home, name='passenger_home'),
-   path('bus_schedules/', PassengerViews.bus_schedules, name='schedules'),
-   path('make_reservation/', PassengerViews.make_reservation, name='make_reservation'),
-   path("search_result/", PassengerViews.search_result, name='search_result'),
-   path("book_seat/<str:schedule_id>/", PassengerViews.book_seat, name='book_seat'),
-   path("get_book_seat/<str:schedule_id>/", PassengerViews.get_book_seat, name='get_book_seat'),
-   path("make_payment/schedule_id=<str:schedule_id>/", PassengerViews.make_payment, name='make_payment'),
-   path("comfirm_payment/<str:payment_id>/", PassengerViews.comfirm_payment, name='comfirm_pament'),
+   path('passenger_home/', StudentViews.passenger_home, name='passenger_home'),
+   path('bus_schedules/', StudentViews.bus_schedules, name='schedules'),
+   path('make_reservation/', StudentViews.make_reservation, name='make_reservation'),
+   path("search_result/", StudentViews.search_result, name='search_result'),
+   path("book_seat/<str:schedule_id>/", StudentViews.book_seat, name='book_seat'),
+   path("get_book_seat/<str:schedule_id>/", StudentViews.get_book_seat, name='get_book_seat'),
+   path("make_payment/schedule_id=<str:schedule_id>/", StudentViews.make_payment, name='make_payment'),
+   path("comfirm_payment/<str:payment_id>/", StudentViews.comfirm_payment, name='comfirm_pament'),
 
 
 

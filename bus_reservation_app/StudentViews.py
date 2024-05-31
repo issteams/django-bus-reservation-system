@@ -15,8 +15,11 @@ def passenger_home(request):
     return render(request, "passenger_templates/passenger_home.html", {})
 
 def make_reservation(request):
-    return render(request, "passenger_templates/make_reservation.html", {})
-
+    routes = BusRoute.objects.all()
+    return render(request, "passenger_templates/make_reservation.html", {
+        "routes": routes,
+    })
+    
 def bus_schedules(request):
     schedules = Schedule.objects.all()
     return render(request, "passenger_templates/schedules.html", {

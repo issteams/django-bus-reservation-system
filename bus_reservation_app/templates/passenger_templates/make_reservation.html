@@ -1,7 +1,7 @@
 {% extends 'passenger_templates/base.html' %}
 {% load static %}
 
-{% block title %} Search Bus Routes {% endblock title%}
+{% block title %}Search Bus Routes{% endblock title%}
 
 {% block custom_css %}
 <style>
@@ -42,28 +42,54 @@
 {% endblock custom_css %}
 
 {% block body %}
-    <!-- Main content -->
-    <div class="search-content">
-      <div class="overlay">
-        <h1 class="text-center">Search Bus Routes</h1>
-        <form method="get" action="{% url 'search_result' %}">
-          <div class="form-group">
-            <label for="origin">Departure City</label>
-            <input type="text" class="form-control" id="origin" name="origin" placeholder="Enter departure city" required>
-          </div>
-          <div class="form-group">
-            <label for="destination">Destination City</label>
-            <input type="text" class="form-control" id="destination" name="destination" placeholder="Enter destination city" required>
-          </div>
-          <div class="form-group">
-            <label for="date">Travel Date</label>
-            <input type="date" class="form-control" id="date" name="date" required>
-          </div>
-          <div class="text-center">
-            <button type="submit" class="btn btn-primary">Search</button>
-          </div>
-        </form>
+<div class="search-content">
+  <div class="overlay">
+    <h1 class="text-center">Search Bus Routes</h1>
+    <form method="get" action="{% url 'search_result' %}">
+      <div class="form-group">
+        <label for="origin">Departure City</label>
+        <select id="origin" name="origin" class="form-control" required>
+          <option value="" disabled selected>Select Origin</option>
+          {% for route in routes %}
+            <option value="{{ route.origin }}">{{ route.origin }}</option>
+          {% endfor %}
+        </select>
       </div>
-    </div>
-    <!-- /.content -->
+      <div class="form-group">
+        <label for="destination">Destination City</label>
+        <select id="destination" name="destination" class="form-control" required>
+          <option value="" disabled selected>Select Destination</option>
+          {% for route in routes %}
+            <option value="{{ route.destination }}">{{ route.destination }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="date">Travel Date</label>
+        <input type="date" class="form-control" id="date" name="date" required>
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </div>
+    </form>
+    {% if message %}
+      <div class="alert alert-info mt-4">{{ message }}</div>
+    {% endif %}
+    {% if schedules %}
+      <div class="mt-4">
+        <h2>Available Schedules</h2>
+        <ul class="list-group">
+          {% for schedule in schedules %}
+            <li class="list-group-item">
+              <strong>Route:</strong> {{ schedule.route.origin }} to {{ schedule.route.destination }}<br>
+              <strong>Departure:</strong> {{ schedule.departure_time }}<br>
+              <strong>Arrival:</strong> {{ schedule.arrival_time }}<br>
+              <a href="{% url 'book_seat' schedule.id %}" class="btn btn-success">Book Seat</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+</div>
 {% endblock body %}
