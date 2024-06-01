@@ -1,0 +1,106 @@
+{% extends 'student_templates/base.html' %}
+{% load static %}
+
+{% block title %}Tickets{% endblock title %}
+
+{% block custom_css %}
+<style>
+  .results-content {
+    background-image: url("{% static 'dist/img/buss.jpeg' %}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    padding: 50px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 15px;
+  }
+  .message {
+    font-size: 1.5em;
+    text-align: center;
+    margin-top: 20px;
+  }
+  .schedule-table {
+    width: 100%;
+    margin-top: 20px;
+  }
+  .schedule-table th, .schedule-table td {
+    padding: 15px;
+    text-align: left;
+    border: none; /* Remove border */
+  }
+  .schedule-table th {
+    background-color: #007bff;
+    color: white; /* Set text color for headers */
+  }
+  .schedule-table td {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white; /* Set text color for cells */
+  }
+  .reserve-btn {
+    background-color: red;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .reserve-btn:hover{
+    color: white;
+  }
+</style>
+{% endblock custom_css %}
+
+{% block body %}
+    <!-- Main content -->
+    <div class="results-content">
+      <div class="overlay">
+        {% if message %}
+          <div class="message">{{ message }}</div>
+        {% else %}
+          <h1 class="text-center mb-4">Tickets</h1>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Schedule</th>
+                  <th>Seat Number</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ticket in tickets %}
+                  <tr>
+                    <td>{{ ticket.schedule.route.origin }} to {{ ticket.schedule.route.destination }}</td>
+                    <td>{{ ticket.seat_number }}</td>
+                    <td>{{ ticket.status }}</td>
+                    <td>{{ ticket.booking_date }}</td>
+                    <td>
+                      {% if ticket.status == 'pending' or ticket.status == 'cancelled'  %}
+                        <a href="{% url 'print_ticket' ticket.id %}" class="btn btn-success disabled">Print</a>
+                      {% else %}
+                        <a href="{% url 'print_ticket' ticket.id %}" class="btn btn-success">Print</a>
+                      {% endif %}
+                      <a href="" class="btn btn-danger">Delete</a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <!-- /.content -->
+{% endblock body %}

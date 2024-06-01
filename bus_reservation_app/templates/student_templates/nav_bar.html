@@ -28,10 +28,12 @@
           <a href="{{ make_reservation }}" class="nav-link {% if request.path == make_reservation %} active {% endif %}">Make Reservation</a>
         </li>
         <li class="nav-item">
-          <a href="" class="nav-link">Payments</a>
+          {% url 'payment_list' as payment_list %}
+          <a href="{{ payment_list }}" class="nav-link {% if request.path == payment_list %} active {% endif %}">Payments</a>
         </li>
         <li class="nav-item">
-          <a href="" class="nav-link">Tickets</a>
+          {% url 'ticket_list' as ticket_list %}
+          <a href="{{ ticket_list }}" class="nav-link {% if request.path == ticket_list %} active {% endif %}">Tickets</a>
         </li>
         <li class="nav-item">
           <a href="#" class="nav-link">Profile</a>

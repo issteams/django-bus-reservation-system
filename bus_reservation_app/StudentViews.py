@@ -1,15 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import BusRoute, Schedule, Ticket, Payment, Student
-from django.http import HttpResponse
+from .models import BusRoute, Schedule, Ticket, Payment, Student, CustomUser
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from django.conf import settings
+from django.template.loader import get_template
 from datetime import datetime
-import stripe 
-
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
+import json
+import requests
 
 def student_home(request):
     return render(request, "student_templates/student_home.html", {})
@@ -127,37 +127,38 @@ def make_payment(request, schedule_id):
                 messages.error(request, "Seat Already Booked")
                 return redirect('book_seat', schedule_id)
 
-            # Create a Stripe Checkout session
-            try:
-                session = stripe.checkout.Session.create(
-                    payment_method_types=['card'],
-                    line_items=[{
-                        'price_data': {
-                            'currency': 'usd',
-                            'product_data': {
-                                'name': f'Ticket for {schedule.route.origin} to {schedule.route.destination}',
-                            },
-                            'unit_amount': int(amount) * 100,  # Stripe requires amount in cents
-                        },
-                        'quantity': 1,
-                    }],
-                    mode='payment',
-                    success_url=request.build_absolute_uri('/payment/success/'),
-                    cancel_url=request.build_absolute_uri('/payment/cancel/'),
-                )
+            # Generate a unique reference for the payment
+            reference = f"{user.id}-{schedule_id}-{seat_number}-{int(datetime.now().timestamp())}"
 
-                # Create a pending ticket
-                ticket = Ticket.objects.create(
-                    student=student,
-                    schedule=schedule,
-                    seat_number=seat_number,
-                    status="pending",
-                    payment_reference=session.id
-                )
+            # Create a pending ticket
+            ticket = Ticket.objects.create(
+                student=student,
+                schedule=schedule,
+                seat_number=seat_number,
+                status="pending",
+                payment_reference=reference
+            )
 
-                return redirect(session.url)
-            except stripe.error.StripeError as e:
-                messages.error(request, f"Payment initialization failed: {e.error.message}")
+            # Create a Paystack payment session
+            headers = {
+                'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}',
+                'Content-Type': 'application/json'
+            }
+            data = {
+                'email': user.email,
+                'amount': int(amount) * 100,  # Amount in kobo
+                'reference': reference,
+                'callback_url': request.build_absolute_uri('/verify_payment/')
+            }
+
+            response = requests.post('https://api.paystack.co/transaction/initialize', headers=headers, json=data)
+            response_data = response.json()
+
+            if response_data['status']:
+                payment_url = response_data['data']['authorization_url']
+                return redirect(payment_url)
+            else:
+                messages.error(request, f"Payment initialization failed: {response_data['message']}")
                 return redirect('make_payment', schedule_id)
 
         except Schedule.DoesNotExist:
@@ -167,30 +168,95 @@ def make_payment(request, schedule_id):
     else:
         schedule = get_object_or_404(Schedule, id=schedule_id)
         seat_number = request.GET.get('seat_number', 'Unknown')
-        amount = 10000
+        amount = 1000  # Placeholder amount; replace with actual amount calculation
 
         return render(request, "student_templates/payment.html", {
             "schedule": schedule,
             "amount": amount,
             "seat_number": seat_number,
-            "stripe_public_key": settings.STRIPE_PUBLIC_KEY
+            "paystack_public_key": settings.PAYSTACK_PUBLIC_KEY
         })
 
 
-@login_required
-def comfirm_payment(request, payment_id):
+@csrf_exempt
+def verify_payment(request):
     if request.method == 'POST':
-        try:
-            payment = Payment.objects.get(pk=payment_id)
-            payment.payment_status = 'Paid'
-            payment.save()
+        data = json.loads(request.body)
+        reference = data.get('reference')
+        schedule_id = data.get('schedule_id')
+        seat_number = data.get('seat_number')
 
-            Ticket.objects.filter(payment=payment).update(status="comfirmed")
-            return HttpResponse("Payment Comfirmed")
-        except Payment.DoesNotExist:
-            return HttpResponse("Not Found")
+        url = f"https://api.paystack.co/transaction/verify/{reference}"
+        headers = {
+            "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
+        }
+        response = requests.get(url, headers=headers)
+        response_data = response.json()
+
+        if response_data['status'] and response_data['data']['status'] == 'success':
+            # Payment was successful
+            amount = response_data['data']['amount'] / 100  # Convert from kobo to naira
+            user = request.user
+            student = Student.objects.get(admin=user)
+            schedule = Schedule.objects.get(id=schedule_id)
+
+            # Create Payment record
+            payment = Payment.objects.create(
+                student=student,
+                schedule=schedule,
+                amount=amount,
+                payment_status='Paid'
+            )
+
+            # Update Ticket record
+            ticket = Ticket.objects.get(schedule=schedule, seat_number=seat_number)
+            ticket.status = "confirmed",
+            ticket.payment = payment
+            ticket.payment_reference = reference
+            ticket.save()
+
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error'}, status=400)
 
 
+@login_required
+def payment_success(request):
+    messages.success(request, "Payment successful! Your seat has been booked.")
+    return render(request, "student_templates/payment_success.html")
+
+@login_required
+def payment_cancel(request):
+    messages.error(request, "Payment was canceled. Please try again.")
+    return render(request, "student_templates/payment_cancel.html")
+
+def payment_list(request):
+    student = Student.objects.get(admin=request.user)
+    payments = Payment.objects.filter(student=student)
+    return render(request, "student_templates/payment_list.html", {
+        "payments": payments,
+    })
+
+def ticket_list(request):
+    student = Student.objects.get(admin=request.user)
+    tickets = Ticket.objects.filter(student=student)
+    return render(request, "student_templates/ticket_list.html", {
+        "tickets": tickets,
+    })
+
+@login_required
+def print_ticket(request, ticket_id):
+    ticket = get_object_or_404(Ticket, id=ticket_id, student__admin=request.user)
+    template = get_template('student_templates/print_ticket.html')
+    context = {
+        'ticket': ticket,
+    }
+    html = template.render(context)
+    return HttpResponse(html)
+
+
+def check_email_exists(request):
+    pass
 
 
     

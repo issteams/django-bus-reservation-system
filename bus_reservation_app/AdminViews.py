@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import CustomUser, Student, BusRoute, Bus, Schedule, Payment, Ticket
 from django.contrib import messages
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 def admin_home(request):
@@ -310,25 +311,25 @@ def payment(request):
     })
 
 def add_payment(request):
-    passengers = Passenger.objects.all()
+    students = Student.objects.all()
     schedules = Schedule.objects.all()
     return render(request, "admin_templates/add_payment.html", {
-        "passengers": passengers,
+        "students": students,
         "schedules": schedules,
     })
     
 
 def add_payment_save(request):
     if request.method == "POST":
-        passenger_id = request.POST.get('passenger')
-        passenger = Passenger.objects.get(admin=passenger_id)
+        student_id = request.POST.get('student')
+        student = Student.objects.get(admin=student_id)
         schedule_id = request.POST.get('schedule')
         schedule = Schedule.objects.get(id=schedule_id)
         amount = request.POST.get('amount')
         payment_status = request.POST.get('payment_status')
 
         try:
-            Payment.objects.create(passenger=passenger, schedule=schedule, amount=amount, payment_status=payment_status)
+            Payment.objects.create(student=student, schedule=schedule, amount=amount, payment_status=payment_status)
             messages.success(request, "Payment Added Successfully!")
             return redirect('add_payment')
         except:
@@ -338,11 +339,11 @@ def add_payment_save(request):
         return HttpResponse("Method not allowed")
 
 def edit_payment(request, payment_id):
-    passengers = Passenger.objects.all()
+    students = Student.objects.all()
     schedules = Schedule.objects.all()
     payment = Payment.objects.get(id=payment_id)
-    return render(request, "bus_ticketing_app/Admin/edit_payment.html", {
-        "passengers": passengers,
+    return render(request, "admin_templates/edit_payment.html", {
+        "students": students,
         "schedules": schedules,
         "payment": payment,
     })
@@ -351,8 +352,8 @@ def edit_payment(request, payment_id):
 def edit_payment_save(request):
     if request.method == "POST":
         payment_id = request.POST.get('payment_id')
-        passenger_id = request.POST.get('passenger')
-        passenger = Passenger.objects.get(admin=passenger_id)
+        student_id = request.POST.get('student')
+        student = Student.objects.get(admin=student_id)
         schedule_id = request.POST.get('schedule')
         schedule = Schedule.objects.get(id=schedule_id)
         amount = request.POST.get('amount')
@@ -360,24 +361,24 @@ def edit_payment_save(request):
 
         try:
             payment = Payment.objects.get(id=payment_id)
-            payment.passenger_id = passenger
+            payment.student = student
             payment.schedule_id = schedule
             payment.amount = amount
             payment.payment_status = payment_status
             payment.save()
             messages.success(request, "Payment Updated Successfully!")
-            return redirect('bus_ticketing_app:payment')
+            return redirect('edit_payment')
         except:
             messages.error(request, "Failed to Update Payment!")
-            return redirect('bus_ticketing_app:payment')
+            return redirect('edit_payment')
     else:
         return HttpResponse("Method not allowed")
 
 def delete_payment(request, payment_id):
     payment = Payment.objects.get(id=payment_id)
     payment.delete()
-    messages.success(request, "Payment Deleted")
-    return redirect("bus_ticketing_app:payment")
+    messages.error(request, "Payment Deleted")
+    return redirect("payment")
 
 
 def ticket(request):
@@ -444,18 +445,19 @@ def edit_ticket_save(request):
         status = request.POST.get('status')
         ticket_status = Ticket.objects.filter(status=status)
 
-        # try:
-        ticket = Ticket.objects.get(id=ticket_id)
-        ticket.student = student
-        ticket.schedule = schedule
-        ticket.payment_id = payment
-        ticket.seat_number = seat_number
-        ticket.status = ticket_status
-        messages.success(request, "Ticket Updated Successfully!")
-        return redirect('bus_ticketing_app:ticket')
-        # except:
-        #     messages.error(request, "Failed to Update Ticket!")
-        #     return redirect('bus_ticketing_app:ticket')
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+            ticket.student = student
+            ticket.schedule = schedule
+            ticket.payment_id = payment
+            ticket.seat_number = seat_number
+            ticket.status = ticket_status
+            ticket.save()
+            messages.success(request, "Ticket Updated Successfully!")
+            return redirect('edit_ticket')
+        except:
+            messages.error(request, "Failed to Update Ticket!")
+            return redirect('bus_ticketing_app:ticket')
     else:
         return redirect('bus_ticketing_app:ticket')
 
@@ -463,7 +465,7 @@ def delete_ticket(request, ticket_id):
     ticket = Ticket.objects.get(id=ticket_id)
     ticket.delete()
     messages.error(request, "Ticket Deleted")
-    return redirect("bus_ticketing_app:ticket")
+    return redirect("ticket")
 
 def admin_profile(request):
     return render(request, "admin_templates/admin_profile.html", {
@@ -490,3 +492,32 @@ def admin_profile_save(request):
         return redirect("admin_profile")
     else:
         return redirect("admin_profile")
+
+
+@csrf_exempt
+def check_email_exist(request):
+    email = request.POST.get('email')
+
+    if CustomUser.objects.filter(email=email).exists():
+        return HttpResponse(True)
+    else:
+        return HttpResponse(False)
+
+@csrf_exempt
+def check_username_exist(request):
+    username = request.POST.get('username')
+
+    if CustomUser.objects.filter(username=username).exists():
+        return HttpResponse(True)
+    else:
+        return HttpResponse(False)
+
+@csrf_exempt
+def check_phone_exist(request):
+    phone_number = request.POST.get('phone_number')
+
+    if Student.objects.filter(phone_number=phone_number).exists():
+        return HttpResponse(True)
+    else:
+        return HttpResponse(False)
+   

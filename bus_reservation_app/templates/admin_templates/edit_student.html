@@ -68,7 +68,7 @@
           </div>
     <!-- /.content -->
 {% endblock body %}
-{% comment %} {% block custom_js %}
+{% block custom_js %}
 <script>
     $(document).ready(function(){
         $("#id_email").keyup(function(){
@@ -131,7 +131,36 @@
 
         });
 
+        $("#id_phone_number").keyup(function(){
+          var phone_number=$(this).val();
+
+          if(phone_number!=""){
+              $.ajax({
+                  url:'{% url 'check_phone_exist' %}',
+                  type:'POST',
+                  data:{phone_number:phone_number}
+              })
+              .done(function(response){
+                  console.log(response);
+                  if(response=="True"){
+                      $(".phone_number_error").remove();
+                      $("<span class='phone_number_error' style='padding: 5px;color: red;font-weight: bold;'>Phone Number Exists</span>").insertAfter("#id_phone_number");
+                  }
+                  else{
+                      $(".phone_number_error").remove();
+                      $("<span class='phone_number_error' style='padding: 5px;color: green;font-weight: bold;'>Phone Number Available</span>").insertAfter("#id_phone_number");
+                  }
+              })
+              .fail(function(){
+                  console.log("failed");
+              })
+          }
+          else{
+              $(".phone_number_error").remove();
+          }
+
+      });
+
     });
 </script>
-{% endblock custom_js %} {% endcomment %}
-
+{% endblock custom_js %}

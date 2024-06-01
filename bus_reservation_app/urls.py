@@ -50,6 +50,9 @@ urlpatterns = [
     path('ticket/delete_ticket/<str:ticket_id>/', AdminViews.delete_ticket, name='delete_ticket'),
     path('admin_profile/', AdminViews.admin_profile, name='admin_profile'),
     path('admin_profile_save/', AdminViews.admin_profile_save, name='admin_profile_save'),
+    path('check_email_exist/', AdminViews.check_email_exist, name='check_email_exist'),
+    path('check_username_exist/', AdminViews.check_username_exist, name='check_username_exist'),
+    path('check_phone_exist/', AdminViews.check_phone_exist, name='check_phone_exist'),
 
     # Student Paths
    path('student_home/', StudentViews.student_home, name='student_home'),
@@ -59,7 +62,12 @@ urlpatterns = [
    path("book_seat/<str:schedule_id>/", StudentViews.book_seat, name='book_seat'),
    path("get_book_seat/<str:schedule_id>/", StudentViews.get_book_seat, name='get_book_seat'),
    path("make_payment/schedule_id=<str:schedule_id>/", StudentViews.make_payment, name='make_payment'),
-   path("comfirm_payment/<str:payment_id>/", StudentViews.comfirm_payment, name='comfirm_pament'),
+   path('verify_payment/', StudentViews.verify_payment, name='verify_payment'),
+   path('payment_success/', StudentViews.payment_success, name='payment_success'),
+   path('payment_cancel/', StudentViews.payment_cancel, name='payment_cancel'),
+   path('payment_list/', StudentViews.payment_list, name='payment_list'),
+   path('ticket_list/', StudentViews.ticket_list, name='ticket_list'),
+   path('print_ticket/<int:ticket_id>/', StudentViews.print_ticket, name='print_ticket'),
 
 
 

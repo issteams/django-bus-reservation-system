@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Print Ticket</title>
+    <style>
+        .ticket-container {
+            width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .ticket-header, .ticket-footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .ticket-header h1, .ticket-footer h2 {
+            margin: 0;
+        }
+        .ticket-body {
+            display: flex;
+            justify-content: space-between;
+        }
+        .ticket-details {
+            width: 45%;
+        }
+        .qr-code {
+            width: 100px;
+            height: 100px;
+            background: url('{% static "dist/img/qr_code_placeholder.png" %}') no-repeat center center;
+            background-size: cover;
+        }
+        .ticket-details p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket-container">
+        <div class="ticket-header">
+            <h1>Bus Ticket</h1>
+            <p>Bus Route: {{ ticket.schedule.route.origin }} to {{ ticket.schedule.route.destination }}</p>
+        </div>
+        <div class="ticket-body">
+            <div class="ticket-details">
+                <p><strong>Student Name:</strong> {{ ticket.student.admin.get_full_name }}</p>
+                <p><strong>Departure Time:</strong> {{ ticket.schedule.departure_time }}</p>
+                <p><strong>Seat Number:</strong> {{ ticket.seat_number }}</p>
+                <p><strong>Ticket ID:</strong> {{ ticket.id }}</p>
+                <p><strong>Amount:</strong> ₦{{ ticket.payment.amount }}</p>
+            </div>
+            <div class="qr-code"></div>
+        </div>
+        <div class="ticket-footer">
+            <h2>Thank you for traveling with us!</h2>
+        </div>
+    </div>
+    <script>
+        window.onload = function() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

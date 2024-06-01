@@ -1,0 +1,44 @@
+{% extends 'student_templates/base.html' %}
+{% load static %}
+
+{% block title %}Payment Canceled{% endblock title %}
+
+{% block custom_css %}
+<style>
+  .cancel-content {
+    background-image: url("{% static 'dist/img/buss.jpeg' %}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+  }
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+{% endblock custom_css %}
+
+{% block body %}
+<div class="cancel-content">
+  <div class="overlay">
+    <h1 class="mb-4">Payment Canceled</h1>
+    <p>Your payment was canceled. Please try again.</p>
+    <a href="{% url 'make_reservation' %}" class="btn btn-primary mt-4">Try Again</a>
+  </div>
+</div>
+{% endblock body %}
