@@ -370,7 +370,7 @@ def edit_payment_save(request):
             return redirect('edit_payment')
         except:
             messages.error(request, "Failed to Update Payment!")
-            return redirect('edit_payment')
+            return redirect('edit_payment', payment_id)
     else:
         return HttpResponse("Method not allowed")
 
