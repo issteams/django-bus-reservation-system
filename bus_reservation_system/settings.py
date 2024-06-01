@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'bus_reservation_system.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['bus_reservation_app/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,3 +133,6 @@ AUTHENTICATION_BACKENDS = ['bus_reservation_app.EmailBackEnd.EmailBackEnd']
 
 PAYSTACK_PUBLIC_KEY = 'pk_test_00c5b29d8c7bd153dce4c3208c51b883bebd4c53'
 PAYSTACK_SECRET_KEY = 'sk_test_9001196602271174413e9628272a22c775b37e26'
+
+EMAIL_BACKEND="django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH=os.path.join(BASE_DIR,"sent_mails")

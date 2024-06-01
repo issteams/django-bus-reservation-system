@@ -1,0 +1,115 @@
+{% extends 'student_templates/base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock title %}
+
+{% block custom_css %}
+<style>
+  .profile-content {
+    background-image: url("{% static 'dist/img/buss.jpeg' %}");
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .profile-header img {
+    border-radius: 50%;
+    margin-bottom: 15px;
+  }
+  .profile-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+  }
+  .profile-details {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    color: #000;
+  }
+  .profile-details h3 {
+    margin-bottom: 20px;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+  }
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+{% endblock custom_css %}
+
+{% block body %}
+<div class="profile-content">
+  <div class="overlay">
+    <div class="profile-header">
+      <img src="{% static 'dist/img/default-avatar.png' %}" alt="Profile Picture" width="120">
+      <h1>{{ student.admin.first_name }} {{ student.admin.last_name }}</h1>
+      <h2>{{ student.admin.email }}</h2>
+    </div>
+    <div class="profile-details">
+      <h3>Edit Profile</h3>
+      <form method="POST" action="{% url 'edit_profile' %}">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="first_name">First Name</label>
+          <input type="text" class="form-control" id="first_name" name="first_name" value="{{ student.admin.first_name }}" required>
+        </div>
+        <div class="form-group">
+          <label for="last_name">Last Name</label>
+          <input type="text" class="form-control" id="last_name" name="last_name" value="{{ student.admin.last_name }}" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="text" class="form-control" id="phone" name="phone" value="{{ student.phone }}" required>
+        </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" class="form-control" id="address" name="address" value="{{ student.address }}" required>
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" class="form-control" id="city" name="city" value="{{ student.city }}" required>
+        </div>
+        <div class="form-group">
+          <label for="state">State</label>
+          <input type="text" class="form-control" id="state" name="state" value="{{ student.state }}" required>
+        </div>
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input type="text" class="form-control" id="country" name="country" value="{{ student.country }}" required>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock body %}

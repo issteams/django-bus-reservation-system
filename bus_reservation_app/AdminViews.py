@@ -367,7 +367,7 @@ def edit_payment_save(request):
             payment.payment_status = payment_status
             payment.save()
             messages.success(request, "Payment Updated Successfully!")
-            return redirect('edit_payment')
+            return redirect('edit_payment', payment_id)
         except:
             messages.error(request, "Failed to Update Payment!")
             return redirect('edit_payment', payment_id)
@@ -412,10 +412,10 @@ def add_ticket_save(request):
         try:
             Ticket.objects.create(student=student, schedule=schedule, payment=payment, status=status, seat_number=seat_number)
             messages.success(request, "Ticket Added Successfully!")
-            return redirect('bus_ticketing_app:ticket')
+            return redirect('add_ticket')
         except:
             messages.error(request, "Failed to Add Ticket!")
-            return redirect('bus_ticketing_app:ticket')
+            return redirect('add_ticket')
     else:
         return HttpResponse("Method not allowed")
 
@@ -443,7 +443,6 @@ def edit_ticket_save(request):
         payment = Payment.objects.get(id=payment_id)
         seat_number = request.POST.get('seat_number')
         status = request.POST.get('status')
-        ticket_status = Ticket.objects.filter(status=status)
 
         try:
             ticket = Ticket.objects.get(id=ticket_id)
@@ -451,15 +450,15 @@ def edit_ticket_save(request):
             ticket.schedule = schedule
             ticket.payment_id = payment
             ticket.seat_number = seat_number
-            ticket.status = ticket_status
+            ticket.status = status
             ticket.save()
             messages.success(request, "Ticket Updated Successfully!")
-            return redirect('edit_ticket')
+            return redirect('edit_ticket', ticket_id)
         except:
             messages.error(request, "Failed to Update Ticket!")
-            return redirect('bus_ticketing_app:ticket')
+            return redirect('edit_ticket', ticket_id)
     else:
-        return redirect('bus_ticketing_app:ticket')
+        return redirect('edit_ticket', ticket_id)
 
 def delete_ticket(request, ticket_id):
     ticket = Ticket.objects.get(id=ticket_id)

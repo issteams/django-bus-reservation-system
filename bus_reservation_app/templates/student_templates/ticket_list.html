@@ -92,7 +92,7 @@
                       {% else %}
                         <a href="{% url 'print_ticket' ticket.id %}" class="btn btn-success">Print</a>
                       {% endif %}
-                      <a href="" class="btn btn-danger">Delete</a>
+                      <a href="{% url 'delete_user_ticket' ticket.id %}" class="btn btn-danger">Delete</a>
                     </td>
                   </tr>
                 {% endfor %}

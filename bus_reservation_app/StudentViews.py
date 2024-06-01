@@ -93,6 +93,8 @@ def get_book_seat(request, schedule_id):
 
         try:
             schedule = Schedule.objects.get(id=schedule_id)
+            schedule.seat_number = seat_number
+            schedule.save()
         except Schedule.DoesNotExist:
             # Handle the case where the schedule doesn't exist
             return HttpResponse("Schedule not found")
@@ -121,6 +123,8 @@ def make_payment(request, schedule_id):
 
         try:
             schedule = Schedule.objects.get(id=schedule_id)
+            schedule.seat_number = seat_number
+            schedule.save()
             student = Student.objects.get(admin=user)
 
             if Ticket.objects.filter(schedule=schedule, seat_number=seat_number).exists():
@@ -167,13 +171,12 @@ def make_payment(request, schedule_id):
             return HttpResponse("Student Not Found")
     else:
         schedule = get_object_or_404(Schedule, id=schedule_id)
-        seat_number = request.GET.get('seat_number', 'Unknown')
         amount = 1000  # Placeholder amount; replace with actual amount calculation
 
         return render(request, "student_templates/payment.html", {
             "schedule": schedule,
             "amount": amount,
-            "seat_number": seat_number,
+            "seat_number": schedule.seat_number,
             "paystack_public_key": settings.PAYSTACK_PUBLIC_KEY
         })
 
@@ -196,28 +199,45 @@ def verify_payment(request):
         if response_data['status'] and response_data['data']['status'] == 'success':
             # Payment was successful
             amount = response_data['data']['amount'] / 100  # Convert from kobo to naira
-            user = request.user
-            student = Student.objects.get(admin=user)
-            schedule = Schedule.objects.get(id=schedule_id)
 
-            # Create Payment record
-            payment = Payment.objects.create(
-                student=student,
-                schedule=schedule,
-                amount=amount,
-                payment_status='Paid'
-            )
+            try:
+                schedule = Schedule.objects.get(id=schedule_id)
+                user = request.user
+                student = Student.objects.get(admin=user)
 
-            # Update Ticket record
-            ticket = Ticket.objects.get(schedule=schedule, seat_number=seat_number)
-            ticket.status = "confirmed",
-            ticket.payment = payment
-            ticket.payment_reference = reference
-            ticket.save()
+                # Create or get the Ticket
+                ticket, created = Ticket.objects.get_or_create(
+                    schedule=schedule,
+                    seat_number=seat_number,
+                    defaults={'student': student, 'status': 'pending', 'payment_reference': reference}
+                )
 
-            return JsonResponse({'status': 'success'})
+                # Ensure the payment is only recorded once
+                if ticket.status != "comfirmed":
+                    # Create Payment record
+                    payment = Payment.objects.create(
+                        student=student,
+                        schedule=schedule,
+                        amount=amount,
+                        payment_status='Paid'
+                    )
+
+                    # Update Ticket record
+                    ticket.status = "comfirmed"
+                    ticket.payment = payment
+                    ticket.payment_reference = reference
+                    ticket.save()
+
+                    return JsonResponse({'status': 'success'})
+                else:
+                    return JsonResponse({'status': 'error', 'message': 'Ticket already confirmed'}, status=400)
+
+            except (Schedule.DoesNotExist, Student.DoesNotExist) as e:
+                return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
         else:
-            return JsonResponse({'status': 'error'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Payment verification failed'}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
 @login_required
@@ -237,6 +257,9 @@ def payment_list(request):
         "payments": payments,
     })
 
+def delete_user_payment(request, payment_id):
+    pass
+
 def ticket_list(request):
     student = Student.objects.get(admin=request.user)
     tickets = Ticket.objects.filter(student=student)
@@ -255,10 +278,52 @@ def print_ticket(request, ticket_id):
     return HttpResponse(html)
 
 
+def delete_user_ticket(request, ticket_id):
+    try:
+        ticket = Ticket.objects.get(id=ticket_id)
+        ticket.delete()
+        messages.success(request, "Ticket Deleted")
+        return redirect("ticket_list")
+    except Exception as e:
+        print(e)
+        messages.error(request, "Failed to delete Ticket")
+        return redirect("ticket_list")
+
+
 def check_email_exists(request):
     pass
 
+@login_required
+def user_profile(request):
+    student = Student.objects.get(admin=request.user)
+    return render(request, "student_templates/user_profile.html", {
+        "student": student
+    })
 
+@login_required
+def edit_profile(request):
+    student = request.user.student  # Adjust this based on your model relationships
+
+    if request.method == 'POST':
+        # Update student profile information
+        student.admin.first_name = request.POST.get('first_name')
+        student.admin.last_name = request.POST.get('last_name')
+        student.phone = request.POST.get('phone')
+        student.address = request.POST.get('address')
+        student.city = request.POST.get('city')
+        student.state = request.POST.get('state')
+        student.country = request.POST.get('country')
+        
+        # Save changes to both the user and student models
+        student.admin.save()
+        student.save()
+
+        messages.success(request, 'Profile updated successfully')
+        return redirect('profile')  # Redirect to the profile view after saving
+
+    return render(request, "student_templates/edit_profile.html", {
+        "student": student
+    })
     
         
 

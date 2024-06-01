@@ -32,6 +32,7 @@
                   <div class="form-group">
                     <label>Amount</label>
                     <input type="number" value="{{ payment.amount }}" class="form-control" name="amount" placeholder="Amount" autocomplete="off">
+                    <input type="hidden" value="{{ payment.id }}" name="payment_id">
                   </div>
                   <div class="form-group">
                     <label>Payment Status</label>

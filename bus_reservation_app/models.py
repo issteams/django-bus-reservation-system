@@ -77,6 +77,7 @@ class Schedule(models.Model):
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE, related_name='schedules')
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
+    seat_number = models.CharField(max_length=10, null=True, blank=True)
     reservation_start_time = models.DateTimeField(null=True, blank=True)
     reservation_end_time = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -106,7 +107,7 @@ class Payment(models.Model):
 class Ticket(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
-        ('confirmed', 'Confirmed'),
+        ('comfirmed', 'Comfirmed'),
         ('cancelled', 'Cancelled'),
     ]
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='tickets')

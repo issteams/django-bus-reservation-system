@@ -16,8 +16,8 @@
       <!-- Left navbar links -->
       <ul class="navbar-nav">
         <li class="nav-item">
-          {% url 'passenger_home' as passenger_home %}
-          <a href="{{ passenger_home }}" class="nav-link {% if request.path == passenger_home %} active {% endif %}">Home</a>
+          {% url 'student_home' as student_home %}
+          <a href="{{ student_home }}" class="nav-link {% if request.path == student_home %} active {% endif %}">Home</a>
         </li>
         <li class="nav-item">
           {% url 'schedules' as schedules %}
@@ -36,7 +36,8 @@
           <a href="{{ ticket_list }}" class="nav-link {% if request.path == ticket_list %} active {% endif %}">Tickets</a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link">Profile</a>
+          {% url 'user_profile' as user_profile %}
+          <a href="{{ user_profile }}" class="nav-link {% if request.path == user_profile %} active {% endif %}">Profile</a>
         </li>
         <li class="nav-item">
           <a href="{% url "logout" %}" class="nav-link" style="float: right;">LogOut</a>

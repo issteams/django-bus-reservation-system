@@ -42,7 +42,8 @@
         <li class="nav-item">
           {% url 'payment' as payment %}
           {% url 'add_payment' as add_payment %}
-          <a href="{{ payment }}" class="nav-link {% if request.path == payment %} active {% endif %} {% if request.path == add_payment %} active {% endif %}">Payments</a>
+          {% url 'edit_payment' as edit_payment %}
+          <a href="{{ payment }}" class="nav-link {% if request.path == payment %} active {% endif %} {% if request.path == add_payment %} active {% endif %} {% if request.path == edit_payment %} active {% endif %}">Payments</a>
         </li>
         <li class="nav-item">
           {% url 'ticket' as ticket %}

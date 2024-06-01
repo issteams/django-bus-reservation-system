@@ -66,8 +66,12 @@ urlpatterns = [
    path('payment_success/', StudentViews.payment_success, name='payment_success'),
    path('payment_cancel/', StudentViews.payment_cancel, name='payment_cancel'),
    path('payment_list/', StudentViews.payment_list, name='payment_list'),
+   path('delete_user_payment/<str:payment_id>/', StudentViews.delete_user_payment, name='delete_user_payment'),
    path('ticket_list/', StudentViews.ticket_list, name='ticket_list'),
    path('print_ticket/<int:ticket_id>/', StudentViews.print_ticket, name='print_ticket'),
+   path('delete_user_ticket/<str:ticket_id>/', StudentViews.delete_user_ticket, name='delete_user_ticket'),
+   path('user_profile/', StudentViews.user_profile, name='user_profile'),
+   path('edit_profile/', StudentViews.edit_profile, name='edit_profile'),
 
 
 
